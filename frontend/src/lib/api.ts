@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { ChatRequest, ChatResponse, ConversationHistory, SuggestionsResponse } from '../types';
+import type { ChatRequest, ChatResponse, ConversationHistory, SuggestionsResponse, ConversationListItem, ConversationsListResponse } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -38,4 +38,12 @@ export async function getHistory(sessionId: string): Promise<ConversationHistory
 export async function getSuggestions(): Promise<string[]> {
     const response = await api.get<SuggestionsResponse>('/chat/suggestions');
     return response.data.suggestions;
+}
+
+/**
+ * Get list of all conversations
+ */
+export async function getConversations(): Promise<ConversationListItem[]> {
+    const response = await api.get<ConversationsListResponse>('/chat/conversations');
+    return response.data.conversations;
 }

@@ -24,3 +24,15 @@ export interface ConversationHistory {
 export interface SuggestionsResponse {
     suggestions: string[];
 }
+
+export interface ConversationListItem {
+    id: string;
+    preview: string;
+    createdAt: Date;
+    updatedAt: Date;
+    messageCount: number;
+}
+
+export interface ConversationsListResponse {
+    conversations: ConversationListItem[];
+}

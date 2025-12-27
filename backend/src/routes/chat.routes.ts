@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { validateChatMessage, validateSessionId } from '../middleware/validation.js';
-import { processChatMessage, getConversationHistory } from '../services/chat.service.js';
+import { processChatMessage, getConversationHistory, getAllConversations } from '../services/chat.service.js';
 import { getSuggestedQuestions } from '../services/llm.service.js';
-import type { ChatRequest, ChatResponse, ConversationHistory, SuggestionsResponse } from '../types/index.js';
+import type { ChatRequest, ChatResponse, ConversationHistory, SuggestionsResponse, ConversationsListResponse } from '../types/index.js';
 
 const router = Router();
 
@@ -58,6 +58,27 @@ router.get('/history/:sessionId', validateSessionId, async (req: Request, res: R
         console.error('❌ Error in GET /api/chat/history:', error);
         res.status(500).json({
             error: error.message || 'Failed to fetch conversation history',
+        });
+    }
+});
+
+/**
+ * GET /api/chat/conversations
+ * Get list of all conversations
+ */
+router.get('/conversations', async (req: Request, res: Response) => {
+    try {
+        const conversations = await getAllConversations();
+
+        const response: ConversationsListResponse = {
+            conversations,
+        };
+
+        res.json(response);
+    } catch (error: any) {
+        console.error('❌ Error in GET /api/chat/conversations:', error);
+        res.status(500).json({
+            error: error.message || 'Failed to fetch conversations',
         });
     }
 });

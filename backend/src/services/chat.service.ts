@@ -68,6 +68,32 @@ export async function saveMessage(
 }
 
 /**
+ * Get all conversations with metadata
+ */
+export async function getAllConversations() {
+    const conversations = await prisma.conversation.findMany({
+        include: {
+            messages: {
+                orderBy: { timestamp: 'asc' },
+                take: 1, // Get first message for preview
+            },
+            _count: {
+                select: { messages: true }
+            }
+        },
+        orderBy: { updatedAt: 'desc' },
+    });
+
+    return conversations.map((conv) => ({
+        id: conv.id,
+        preview: conv.messages[0]?.text || 'New Chat',
+        createdAt: conv.createdAt,
+        updatedAt: conv.updatedAt,
+        messageCount: conv._count.messages,
+    }));
+}
+
+/**
  * Process a chat message and get AI response
  */
 export async function processChatMessage(message: string, sessionId?: string) {

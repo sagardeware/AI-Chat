@@ -4,9 +4,10 @@ import { ScrollArea } from './ui/scroll-area';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import { TypingIndicator } from './TypingIndicator';
-import { sendMessage, getHistory } from '@/lib/api';
-import type { Message } from '@/types';
-import { AlertCircle } from 'lucide-react';
+import { Sidebar } from './Sidebar';
+import { sendMessage, getHistory, getConversations } from '@/lib/api';
+import type { Message, ConversationListItem } from '@/types';
+import { AlertCircle, Menu } from 'lucide-react';
 import { Button } from './ui/button';
 
 const SESSION_STORAGE_KEY = 'chat_session_id';
@@ -16,6 +17,9 @@ export function ChatContainer() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [sessionId, setSessionId] = useState<string | null>(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [conversations, setConversations] = useState<ConversationListItem[]>([]);
+    const [isLoadingConversations, setIsLoadingConversations] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     // Load session from localStorage on mount
@@ -25,6 +29,7 @@ export function ChatContainer() {
             setSessionId(savedSessionId);
             loadHistory(savedSessionId);
         }
+        loadConversations();
     }, []);
 
     // Auto-scroll to bottom when messages change
@@ -44,6 +49,25 @@ export function ChatContainer() {
             localStorage.removeItem(SESSION_STORAGE_KEY);
             setSessionId(null);
         }
+    };
+
+    const loadConversations = async () => {
+        try {
+            setIsLoadingConversations(true);
+            const convs = await getConversations();
+            setConversations(convs);
+        } catch (err) {
+            console.error('Failed to load conversations:', err);
+        } finally {
+            setIsLoadingConversations(false);
+        }
+    };
+
+    const handleSelectConversation = async (id: string) => {
+        setSessionId(id);
+        localStorage.setItem(SESSION_STORAGE_KEY, id);
+        await loadHistory(id);
+        setIsSidebarOpen(false);
     };
 
     const handleSendMessage = async (text: string) => {
@@ -97,73 +121,100 @@ export function ChatContainer() {
         setSessionId(null);
         setMessages([]);
         setError(null);
+        setIsSidebarOpen(false);
+        loadConversations(); // Refresh conversation list
     };
 
     return (
-        <Card className="w-full max-w-4xl mx-auto h-[600px] flex flex-col shadow-lg">
-            <CardHeader className="border-b">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <CardTitle className="text-2xl">TechMart Support</CardTitle>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            AI-powered customer support • Always here to help
-                        </p>
-                    </div>
-                    {messages.length > 0 && (
-                        <Button variant="outline" size="sm" onClick={handleNewChat}>
-                            New Chat
-                        </Button>
-                    )}
-                </div>
-            </CardHeader>
+        <div className="flex h-screen">
+            <Sidebar
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+                conversations={conversations}
+                activeConversationId={sessionId}
+                onSelectConversation={handleSelectConversation}
+                onNewChat={handleNewChat}
+                isLoading={isLoadingConversations}
+            />
 
-            <CardContent className="flex-1 p-0 flex flex-col overflow-hidden">
-                {/* Messages Area */}
-                <ScrollArea className="flex-1 p-4">
-                    <div className="space-y-4">
-                        {messages.length === 0 && !isLoading && (
-                            <div className="text-center py-12">
-                                <div className="text-6xl mb-4">👋</div>
-                                <h3 className="text-lg font-semibold mb-2">
-                                    Welcome to TechMart Support!
-                                </h3>
-                                <p className="text-muted-foreground">
-                                    Ask me anything about our products, shipping, returns, or support hours.
-                                </p>
-                            </div>
-                        )}
-
-                        {messages.map((message) => (
-                            <ChatMessage key={message.id} message={message} />
-                        ))}
-
-                        {isLoading && <TypingIndicator />}
-
-                        {error && (
-                            <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-                                <AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
-                                <div className="flex-1">
-                                    <p className="text-sm font-medium text-destructive">Error</p>
-                                    <p className="text-sm text-destructive/90 mt-1">{error}</p>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={handleRetry}
-                                        className="mt-2"
-                                    >
-                                        Dismiss
-                                    </Button>
+            <div className="flex-1 flex flex-col min-w-0">
+                <Card className="w-full h-full flex flex-col shadow-none rounded-none border-0">
+                    <CardHeader className="border-b">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setIsSidebarOpen(true)}
+                                    title="Open conversations"
+                                    className="lg:hidden"
+                                >
+                                    <Menu className="h-5 w-5" />
+                                </Button>
+                                <div>
+                                    <CardTitle className="text-2xl">TechMart Support</CardTitle>
+                                    <p className="text-sm text-muted-foreground mt-1">
+                                        AI-powered customer support • Always here to help
+                                    </p>
                                 </div>
                             </div>
-                        )}
+                            {messages.length > 0 && (
+                                <Button variant="outline" size="sm" onClick={handleNewChat}>
+                                    New Chat
+                                </Button>
+                            )}
+                        </div>
+                    </CardHeader>
 
-                        <div ref={scrollRef} />
-                    </div>
-                </ScrollArea>
+                    <CardContent className="flex-1 p-0 flex flex-col overflow-hidden">
+                        {/* Messages Area */}
+                        <ScrollArea className="flex-1 p-4">
+                            <div className="space-y-4">
+                                {messages.length === 0 && !isLoading && (
+                                    <div className="text-center py-12">
+                                        <div className="text-6xl mb-4">👋</div>
+                                        <h3 className="text-lg font-semibold mb-2">
+                                            Welcome to TechMart Support!
+                                        </h3>
+                                        <p className="text-muted-foreground">
+                                            Ask me anything about our products, shipping, returns, or support hours.
+                                        </p>
+                                    </div>
+                                )}
 
-                {/* Input Area */}
-                <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
-            </CardContent>
-        </Card>
+                                {messages.map((message) => (
+                                    <ChatMessage key={message.id} message={message} />
+                                ))}
+
+                                {isLoading && <TypingIndicator />}
+
+                                {error && (
+                                    <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                                        <AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium text-destructive">Error</p>
+                                            <p className="text-sm text-destructive/90 mt-1">{error}</p>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={handleRetry}
+                                                className="mt-2"
+                                            >
+                                                Dismiss
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div ref={scrollRef} />
+                            </div>
+                        </ScrollArea>
+
+                        {/* Input Area */}
+                        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
     );
 }

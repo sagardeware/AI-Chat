@@ -3,9 +3,13 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import chatRoutes from './routes/chat.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { redisService } from './services/redis.service.js';
 
-// Load environment variables
+// Load environment variables FIRST
 dotenv.config();
+
+// Initialize Redis after env vars are loaded
+await redisService.init();
 
 const app = express();
 const PORT = process.env.PORT || 3001;

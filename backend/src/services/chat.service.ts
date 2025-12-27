@@ -1,6 +1,7 @@
 import { Sender } from '@prisma/client';
 import prisma from '../config/database.js';
 import { generateReply } from './llm.service.js';
+import { redisService } from './redis.service.js';
 
 /**
  * Create a new conversation
@@ -30,16 +31,33 @@ export async function getConversation(conversationId: string) {
 }
 
 /**
- * Get conversation history
+ * Get conversation history (with Redis caching)
  */
 export async function getConversationHistory(conversationId: string) {
+    const cacheKey = `conversation:${conversationId}`;
+
+    // Try to get from cache first
+    if (redisService.isAvailable()) {
+        try {
+            const cached = await redisService.get(cacheKey);
+            if (cached) {
+                console.log(`✅ Cache HIT for conversation ${conversationId}`);
+                return JSON.parse(cached);
+            }
+            console.log(`❌ Cache MISS for conversation ${conversationId}`);
+        } catch (error) {
+            console.error('Redis cache read error:', error);
+        }
+    }
+
+    // Fetch from database
     const conversation = await getConversation(conversationId);
 
     if (!conversation) {
         return null;
     }
 
-    return {
+    const result = {
         conversationId: conversation.id,
         messages: conversation.messages.map((msg) => ({
             id: msg.id,
@@ -48,6 +66,18 @@ export async function getConversationHistory(conversationId: string) {
             timestamp: msg.timestamp,
         })),
     };
+
+    // Cache the result (1 hour TTL)
+    if (redisService.isAvailable()) {
+        try {
+            await redisService.set(cacheKey, JSON.stringify(result), 3600);
+            console.log(`💾 Cached conversation ${conversationId}`);
+        } catch (error) {
+            console.error('Redis cache write error:', error);
+        }
+    }
+
+    return result;
 }
 
 /**
@@ -119,11 +149,22 @@ export async function processChatMessage(message: string, sessionId?: string) {
         // Save user message
         await saveMessage(conversation.id, Sender.USER, message);
 
+        // Invalidate cache after new message
+        if (redisService.isAvailable()) {
+            await redisService.del(`conversation:${conversation.id}`);
+            console.log(`🗑️ Invalidated cache for conversation ${conversation.id}`);
+        }
+
         // Generate AI reply
         const aiReply = await generateReply(conversationContext, message);
 
         // Save AI message
         const aiMessage = await saveMessage(conversation.id, Sender.AI, aiReply);
+
+        // Invalidate cache again after AI response
+        if (redisService.isAvailable()) {
+            await redisService.del(`conversation:${conversation.id}`);
+        }
 
         return {
             reply: aiReply,

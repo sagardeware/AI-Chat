@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { validateChatMessage, validateSessionId } from '../middleware/validation.js';
+import { rateLimitMiddleware } from '../middleware/ratelimit.middleware.js';
 import { processChatMessage, getConversationHistory, getAllConversations } from '../services/chat.service.js';
 import { getSuggestedQuestions } from '../services/llm.service.js';
 import type { ChatRequest, ChatResponse, ConversationHistory, SuggestionsResponse, ConversationsListResponse } from '../types/index.js';
@@ -9,9 +10,9 @@ const router = Router();
 
 /**
  * POST /api/chat/message
- * Send a message and get AI reply
+ * Send a message and get AI reply (with rate limiting)
  */
-router.post('/message', validateChatMessage, async (req: Request, res: Response) => {
+router.post('/message', rateLimitMiddleware, validateChatMessage, async (req: Request, res: Response) => {
     try {
         const { message, sessionId } = req.body as ChatRequest;
 

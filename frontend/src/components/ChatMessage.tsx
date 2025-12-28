@@ -2,13 +2,17 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import { Bot, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Message } from '@/types';
+import ReactMarkdown from 'react-markdown';
+import { TypewriterText } from './TypewriterText';
 
 interface ChatMessageProps {
     message: Message;
+    isNew?: boolean; // Track if this is a newly received message
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, isNew = false }: ChatMessageProps) {
     const isUser = message.sender === 'USER';
+    const shouldAnimate = !isUser && isNew; // Only animate new AI messages
 
     return (
         <div
@@ -41,7 +45,28 @@ export function ChatMessage({ message }: ChatMessageProps) {
                             : 'bg-muted rounded-tl-sm'
                     )}
                 >
-                    <p className="text-sm whitespace-pre-wrap break-words">{message.text}</p>
+                    {isUser ? (
+                        <p className="text-sm whitespace-pre-wrap break-words">{message.text}</p>
+                    ) : (
+                        <div className="text-sm prose prose-sm max-w-none dark:prose-invert">
+                            {shouldAnimate ? (
+                                <TypewriterText text={message.text} speed={15} />
+                            ) : (
+                                <ReactMarkdown
+                                    components={{
+                                        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                                        em: ({ children }) => <em className="italic">{children}</em>,
+                                        ul: ({ children }) => <ul className="list-disc list-inside mb-2">{children}</ul>,
+                                        ol: ({ children }) => <ol className="list-decimal list-inside mb-2">{children}</ol>,
+                                        li: ({ children }) => <li className="mb-1">{children}</li>,
+                                    }}
+                                >
+                                    {message.text}
+                                </ReactMarkdown>
+                            )}
+                        </div>
+                    )}
                 </div>
                 <span className="text-xs text-muted-foreground mt-1 px-2">
                     {new Date(message.timestamp).toLocaleTimeString([], {

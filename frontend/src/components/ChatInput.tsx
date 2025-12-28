@@ -51,12 +51,13 @@ export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
         <div className="border-t bg-background p-4 space-y-3">
             {/* Suggested Questions */}
             {suggestions.length > 0 && message.length === 0 && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     {suggestions.slice(0, 4).map((suggestion, index) => (
                         <Badge
                             key={index}
                             variant="outline"
-                            className="cursor-pointer hover:bg-accent transition-colors"
+                            className="cursor-pointer hover:bg-accent transition-colors animate-in fade-in slide-in-from-bottom-1"
+                            style={{ animationDelay: `${index * 50}ms` }}
                             onClick={() => handleSuggestionClick(suggestion)}
                         >
                             {suggestion}

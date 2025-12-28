@@ -46,7 +46,57 @@ const SUGGESTED_QUESTIONS = [
 ];
 
 /**
- * Generate AI reply using Gemini API
+ * Call Gemini API with specified model
+ */
+async function callGeminiAPI(
+    model: string,
+    contents: any[],
+    generationConfig: any
+): Promise<string> {
+    const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents,
+                generationConfig,
+            }),
+        }
+    );
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(`Gemini API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+    }
+
+    const data = await response.json() as GeminiResponse;
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text || text.trim().length === 0) {
+        throw new Error('Empty response from Gemini API');
+    }
+
+    return text.trim();
+}
+
+/**
+ * Check if error is a rate limit error
+ */
+function isRateLimitError(error: any): boolean {
+    const errorMessage = error.message?.toLowerCase() || '';
+    return (
+        errorMessage.includes('quota') ||
+        errorMessage.includes('rate limit') ||
+        errorMessage.includes('429') ||
+        errorMessage.includes('resource_exhausted')
+    );
+}
+
+/**
+ * Generate AI reply using Gemini API with automatic fallback
  */
 export async function generateReply(
     conversationHistory: Array<{ sender: 'USER' | 'AI'; text: string }>,
@@ -73,37 +123,33 @@ export async function generateReply(
             }
         ];
 
-        // Make direct REST API call to v1beta endpoint
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    contents,
-                    generationConfig: {
-                        maxOutputTokens: 800,
-                        temperature: 0.7,
-                    },
-                }),
+        const generationConfig = {
+            maxOutputTokens: 800,
+            temperature: 0.7,
+        };
+
+        // Try primary model first (gemini-2.5-flash)
+        try {
+            console.log('🤖 Using primary model: gemini-2.5-flash');
+            const response = await callGeminiAPI('gemini-2.5-flash', contents, generationConfig);
+            return response;
+        } catch (primaryError: any) {
+            // If rate limit error, try fallback model
+            if (isRateLimitError(primaryError)) {
+                console.log('⚠️  Primary model rate limit hit, falling back to gemini-1.5-flash');
+                try {
+                    const response = await callGeminiAPI('gemini-1.5-flash', contents, generationConfig);
+                    console.log('✅ Fallback model succeeded');
+                    return response;
+                } catch (fallbackError: any) {
+                    console.error('❌ Fallback model also failed:', fallbackError);
+                    // If fallback also fails, throw the original error
+                    throw primaryError;
+                }
             }
-        );
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(`Gemini API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+            // If not a rate limit error, throw immediately
+            throw primaryError;
         }
-
-        const data = await response.json() as GeminiResponse;
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (!text || text.trim().length === 0) {
-            throw new Error('Empty response from Gemini API');
-        }
-
-        return text.trim();
     } catch (error: any) {
         console.error('❌ Gemini API Error:', error);
 
@@ -112,7 +158,7 @@ export async function generateReply(
             throw new Error('Invalid or missing API key. Please check your GEMINI_API_KEY environment variable.');
         }
 
-        if (error.message?.includes('quota') || error.message?.includes('rate limit') || error.message?.includes('429')) {
+        if (isRateLimitError(error)) {
             return "I apologize, but I'm experiencing high demand right now. Please try again in a moment.";
         }
 

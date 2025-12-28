@@ -20,6 +20,7 @@ export function ChatContainer() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [conversations, setConversations] = useState<ConversationListItem[]>([]);
     const [isLoadingConversations, setIsLoadingConversations] = useState(false);
+    const [latestMessageId, setLatestMessageId] = useState<string | null>(null); // Track latest AI message for typewriter
     const scrollRef = useRef<HTMLDivElement>(null);
 
     // Load session from localStorage on mount
@@ -66,6 +67,7 @@ export function ChatContainer() {
     const handleSelectConversation = async (id: string) => {
         setSessionId(id);
         localStorage.setItem(SESSION_STORAGE_KEY, id);
+        setLatestMessageId(null); // Clear typewriter effect for old conversations
         await loadHistory(id);
         setIsSidebarOpen(false);
     };
@@ -100,6 +102,7 @@ export function ChatContainer() {
                 timestamp: new Date(),
             };
             setMessages((prev) => [...prev, aiMessage]);
+            setLatestMessageId(response.messageId); // Mark as latest for typewriter effect
         } catch (err: any) {
             console.error('Failed to send message:', err);
             setError(
@@ -121,6 +124,7 @@ export function ChatContainer() {
         setSessionId(null);
         setMessages([]);
         setError(null);
+        setLatestMessageId(null); // Clear typewriter effect
         setIsSidebarOpen(false);
         loadConversations(); // Refresh conversation list
     };
@@ -183,7 +187,11 @@ export function ChatContainer() {
                                 )}
 
                                 {messages.map((message) => (
-                                    <ChatMessage key={message.id} message={message} />
+                                    <ChatMessage
+                                        key={message.id}
+                                        message={message}
+                                        isNew={message.id === latestMessageId && message.sender === 'AI'}
+                                    />
                                 ))}
 
                                 {isLoading && <TypingIndicator />}

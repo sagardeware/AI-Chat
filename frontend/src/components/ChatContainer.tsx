@@ -7,7 +7,7 @@ import { TypingIndicator } from './TypingIndicator';
 import { Sidebar } from './Sidebar';
 import { sendMessage, getHistory, getConversations } from '@/lib/api';
 import type { Message, ConversationListItem } from '@/types';
-import { AlertCircle, Menu } from 'lucide-react';
+import { AlertCircle, Menu, Bot } from 'lucide-react';
 import { Button } from './ui/button';
 
 const SESSION_STORAGE_KEY = 'chat_session_id';
@@ -76,7 +76,7 @@ export function ChatContainer() {
         setError(null);
         setIsLoading(true);
 
-        // Add user message optimistically
+        // Add user message immediately
         const userMessage: Message = {
             id: crypto.randomUUID(),
             sender: 'USER',
@@ -130,7 +130,7 @@ export function ChatContainer() {
     };
 
     return (
-        <div className="flex h-screen">
+        <div className="flex h-screen w-full bg-background">
             <Sidebar
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
@@ -155,11 +155,16 @@ export function ChatContainer() {
                                 >
                                     <Menu className="h-5 w-5" />
                                 </Button>
-                                <div>
-                                    <CardTitle className="text-2xl">TechMart Support</CardTitle>
-                                    <p className="text-sm text-muted-foreground mt-1">
-                                        AI-powered customer support • Always here to help
-                                    </p>
+                                <div className="flex items-center gap-3">
+                                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                        <Bot className="h-6 w-6 text-primary" />
+                                    </div>
+                                    <div>
+                                        <CardTitle className="text-2xl">TechMart Support</CardTitle>
+                                        <p className="text-sm text-muted-foreground mt-1">
+                                            AI-powered customer support • Always here to help
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             {messages.length > 0 && (

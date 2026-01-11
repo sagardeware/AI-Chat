@@ -12,7 +12,11 @@ import { Button } from './ui/button';
 
 const SESSION_STORAGE_KEY = 'chat_session_id';
 
-export function ChatContainer() {
+interface ChatContainerProps {
+    isWidget?: boolean;
+}
+
+export function ChatContainer({ isWidget = false }: ChatContainerProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -130,50 +134,54 @@ export function ChatContainer() {
     };
 
     return (
-        <div className="flex h-screen w-full bg-background">
-            <Sidebar
-                isOpen={isSidebarOpen}
-                onClose={() => setIsSidebarOpen(false)}
-                conversations={conversations}
-                activeConversationId={sessionId}
-                onSelectConversation={handleSelectConversation}
-                onNewChat={handleNewChat}
-                isLoading={isLoadingConversations}
-            />
+        <div className={isWidget ? "flex h-full w-full bg-background" : "flex h-screen w-full bg-background"}>
+            {!isWidget && (
+                <Sidebar
+                    isOpen={isSidebarOpen}
+                    onClose={() => setIsSidebarOpen(false)}
+                    conversations={conversations}
+                    activeConversationId={sessionId}
+                    onSelectConversation={handleSelectConversation}
+                    onNewChat={handleNewChat}
+                    isLoading={isLoadingConversations}
+                />
+            )}
 
             <div className="flex-1 flex flex-col min-w-0">
-                <Card className="w-full h-full flex flex-col shadow-none rounded-none border-0">
-                    <CardHeader className="border-b">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => setIsSidebarOpen(true)}
-                                    title="Open conversations"
-                                    className="lg:hidden"
-                                >
-                                    <Menu className="h-5 w-5" />
-                                </Button>
+                <Card className={isWidget ? "w-full h-full flex flex-col shadow-none rounded-none border-0" : "w-full h-full flex flex-col shadow-none rounded-none border-0"}>
+                    {!isWidget && (
+                        <CardHeader className="border-b">
+                            <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                                        <Bot className="h-6 w-6 text-primary" />
-                                    </div>
-                                    <div>
-                                        <CardTitle className="text-2xl">TechMart Support</CardTitle>
-                                        <p className="text-sm text-muted-foreground mt-1">
-                                            AI-powered customer support • Always here to help
-                                        </p>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => setIsSidebarOpen(true)}
+                                        title="Open conversations"
+                                        className="lg:hidden"
+                                    >
+                                        <Menu className="h-5 w-5" />
+                                    </Button>
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                            <Bot className="h-6 w-6 text-primary" />
+                                        </div>
+                                        <div>
+                                            <CardTitle className="text-2xl">Veterinary Assistant</CardTitle>
+                                            <p className="text-sm text-muted-foreground mt-1">
+                                                AI-powered veterinary support • Always here to help 🐾
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
+                                {messages.length > 0 && (
+                                    <Button variant="outline" size="sm" onClick={handleNewChat}>
+                                        New Chat
+                                    </Button>
+                                )}
                             </div>
-                            {messages.length > 0 && (
-                                <Button variant="outline" size="sm" onClick={handleNewChat}>
-                                    New Chat
-                                </Button>
-                            )}
-                        </div>
-                    </CardHeader>
+                        </CardHeader>
+                    )}
 
                     <CardContent className="flex-1 p-0 flex flex-col overflow-hidden">
                         {/* Messages Area */}
@@ -181,12 +189,12 @@ export function ChatContainer() {
                             <div className="space-y-4">
                                 {messages.length === 0 && !isLoading && (
                                     <div className="text-center py-12">
-                                        <div className="text-6xl mb-4">👋</div>
+                                        <div className="text-6xl mb-4">🐾</div>
                                         <h3 className="text-lg font-semibold mb-2">
-                                            Welcome to TechMart Support!
+                                            Welcome to Veterinary Assistant!
                                         </h3>
                                         <p className="text-muted-foreground">
-                                            Ask me anything about our products, shipping, returns, or support hours.
+                                            Ask me about pet care, vaccinations, health concerns, or book an appointment.
                                         </p>
                                     </div>
                                 )}

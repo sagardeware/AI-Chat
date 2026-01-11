@@ -8,10 +8,11 @@ const chatMessageSchema = z.object({
         .min(1, 'Message cannot be empty')
         .max(2000, 'Message cannot exceed 2000 characters')
         .trim(),
-    sessionId: z.string().uuid().optional(),
+    sessionId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid session ID format').optional(),
+    context: z.record(z.any()).optional(), // Allow any context object
 });
 
-const sessionIdSchema = z.string().uuid('Invalid session ID format');
+const sessionIdSchema = z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid session ID format');
 
 /**
  * Validate chat message request

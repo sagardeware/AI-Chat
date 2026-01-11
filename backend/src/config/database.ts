@@ -1,22 +1,50 @@
-import { PrismaClient } from '@prisma/client';
+import mongoose from 'mongoose';
 
-const prisma = new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-});
+/**
+ * MongoDB Connection Setup
+ */
+export async function connectDatabase() {
+    try {
+        const mongoUri = process.env.MONGODB_URI;
 
-// Handle graceful shutdown
-process.on('beforeExit', async () => {
-    await prisma.$disconnect();
-});
+        if (!mongoUri) {
+            throw new Error('MONGODB_URI is not defined in environment variables');
+        }
 
-process.on('SIGINT', async () => {
-    await prisma.$disconnect();
-    process.exit(0);
-});
+        await mongoose.connect(mongoUri);
 
-process.on('SIGTERM', async () => {
-    await prisma.$disconnect();
-    process.exit(0);
-});
+        console.log('✅ MongoDB: Connected successfully');
+        console.log(`📦 Database: ${mongoose.connection.name}`);
 
-export default prisma;
+        // Handle connection events
+        mongoose.connection.on('error', (error) => {
+            console.error('❌ MongoDB connection error:', error);
+        });
+
+        mongoose.connection.on('disconnected', () => {
+            console.warn('⚠️  MongoDB: Disconnected');
+        });
+
+        mongoose.connection.on('reconnected', () => {
+            console.log('🔄 MongoDB: Reconnected');
+        });
+
+    } catch (error) {
+        console.error('❌ MongoDB connection failed:', error);
+        process.exit(1);
+    }
+}
+
+/**
+ * Gracefully disconnect from MongoDB
+ */
+export async function disconnectDatabase() {
+    try {
+        await mongoose.disconnect();
+        console.log('🔴 MongoDB: Disconnected');
+    } catch (error) {
+        console.error('❌ MongoDB disconnect error:', error);
+    }
+}
+
+export default mongoose;

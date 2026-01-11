@@ -4,12 +4,14 @@ import dotenv from 'dotenv';
 import chatRoutes from './routes/chat.routes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { redisService } from './services/redis.service.js';
+import { connectDatabase, disconnectDatabase } from './config/database.js';
 
 // Load environment variables FIRST
 dotenv.config();
 
-// Initialize Redis after env vars are loaded
+// Initialize Redis and MongoDB
 await redisService.init();
+await connectDatabase();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -39,14 +41,14 @@ app.use(express.urlencoded({ extended: true }));
 
 // Request logging in development
 if (process.env.NODE_ENV === 'development') {
-    app.use((req, res, next) => {
+    app.use((req, _res, next) => {
         console.log(`${req.method} ${req.path}`);
         next();
     });
 }
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
@@ -67,8 +69,27 @@ app.listen(PORT, () => {
     console.log(`📡 Listening on http://localhost:${PORT}`);
     console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🔑 Gemini API Key: ${process.env.GEMINI_API_KEY ? '✅ Set' : '❌ Not set'}`);
-    console.log(`💾 Database: ${process.env.DATABASE_URL ? '✅ Configured' : '❌ Not configured'}`);
+    console.log(`💾 MongoDB: ${process.env.MONGODB_URI ? '✅ Configured' : '❌ Not configured'}`);
 });
+
+// Graceful shutdown
+async function gracefulShutdown(signal: string) {
+    console.log(`\n⚠️  ${signal} received. Starting graceful shutdown...`);
+
+    try {
+        await redisService.disconnect();
+        await disconnectDatabase();
+        console.log('✅ Graceful shutdown completed');
+        process.exit(0);
+    } catch (error) {
+        console.error('❌ Error during shutdown:', error);
+        process.exit(1);
+    }
+}
+
+// Handle shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {

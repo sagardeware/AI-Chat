@@ -6,6 +6,13 @@ export interface ChatMessage {
 export interface ChatRequest {
     message: string;
     sessionId?: string;
+    context?: {
+        userId?: string;
+        userName?: string;
+        petName?: string;
+        source?: string;
+        [key: string]: any;
+    };
 }
 
 export interface ChatResponse {
@@ -38,4 +45,26 @@ export interface ConversationListItem {
 
 export interface ConversationsListResponse {
     conversations: ConversationListItem[];
+}
+
+export interface AppointmentRequest {
+    conversationId: string;
+    petOwnerName: string;
+    petName: string;
+    phone: string;
+    preferredDateTime: string | Date;
+}
+
+export interface AppointmentResponse {
+    success: boolean;
+    appointmentId: string;
+    message: string;
+    appointment: {
+        id: string;
+        petOwnerName: string;
+        petName: string;
+        phone: string;
+        preferredDateTime: Date;
+        status: string;
+    };
 }

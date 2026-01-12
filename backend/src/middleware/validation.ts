@@ -25,7 +25,7 @@ export function validateChatMessage(
     try {
         const validated = chatMessageSchema.parse(req.body);
         req.body = validated;
-        next();
+        return next();
     } catch (error) {
         if (error instanceof z.ZodError) {
             return res.status(400).json({
@@ -36,7 +36,7 @@ export function validateChatMessage(
                 })),
             });
         }
-        next(error);
+        return next(error);
     }
 }
 
@@ -51,7 +51,7 @@ export function validateSessionId(
     try {
         const validated = sessionIdSchema.parse(req.params.sessionId);
         req.params.sessionId = validated;
-        next();
+        return next();
     } catch (error) {
         if (error instanceof z.ZodError) {
             return res.status(400).json({
@@ -59,6 +59,6 @@ export function validateSessionId(
                 details: error.errors,
             });
         }
-        next(error);
+        return next(error);
     }
 }

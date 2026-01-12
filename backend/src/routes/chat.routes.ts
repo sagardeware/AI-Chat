@@ -147,6 +147,7 @@ router.post('/appointment', async (req: Request, res: Response) => {
         };
 
         res.json(response);
+        return;
     } catch (error: any) {
         console.error('❌ Error in POST /api/chat/appointment:', error);
         res.status(500).json({

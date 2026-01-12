@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Production SDK Test - Live Deployment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 10px 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .badge.production {
+            background: #2196F3;
+        }
+
+        .badge.live {
+            background: #FF5722;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .info-box p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .info-box code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+
+        .status.success {
+            color: #4CAF50;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .cta {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            color: #999;
+        }
+
+        .test-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .test-section h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚀 AI Chatbot SDK</h1>
+        <p class="subtitle">Production Deployment Test</p>
+
+        <div class="hero">
+            <h2>🎉 Live Production Test!</h2>
+            <p>Testing deployed SDK with production backend on Render</p>
+            <div>
+                <span class="badge live">🔴 LIVE</span>
+                <span class="badge production">☁️ Cloud Deployed</span>
+                <span class="badge">🤖 AI Powered</span>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>📡 Deployment Status</h3>
+            <p>
+                <strong>Backend:</strong>
+                <span class="status success">
+                    <span class="status-dot"></span>
+                    https://ai-chat-backend-5mfu.onrender.com
+                </span>
+            </p>
+            <p>
+                <strong>Frontend:</strong>
+                <span class="status success">
+                    <span class="status-dot"></span>
+                    https://ai-chat-frontend-pm8e.onrender.com
+                </span>
+            </p>
+            <p>
+                <strong>SDK URL:</strong>
+                <code>https://ai-chat-frontend-pm8e.onrender.com/sdk/vet-chatbot-sdk.umd.cjs</code>
+            </p>
+        </div>
+
+        <div class="info-box">
+            <h3>🔌 SDK Configuration</h3>
+            <p><strong>Mode:</strong> Production (Deployed)</p>
+            <p><strong>Backend API:</strong> <code>https://ai-chat-backend-5mfu.onrender.com</code></p>
+            <p><strong>SDK Source:</strong> <code>Render CDN</code></p>
+            <p><strong>Database:</strong> MongoDB Atlas</p>
+            <p><strong>AI Model:</strong> Google Gemini</p>
+        </div>
+
+        <div class="test-section">
+            <h4>🧪 Test Instructions:</h4>
+            <ol style="margin-left: 20px; line-height: 2;">
+                <li>Look for the chat widget button in the bottom-right corner</li>
+                <li>Click the button to open the chat interface</li>
+                <li>Try asking: "What vaccinations does my puppy need?"</li>
+                <li>Test appointment booking: "I'd like to book an appointment for my dog"</li>
+                <li>Check the browser console (F12) for any errors</li>
+            </ol>
+        </div>
+
+        <div class="cta">
+            <h3>👉 Test the Chatbot Now!</h3>
+            <p>Click the purple chat button in the bottom-right corner</p>
+            <p style="font-size: 1em; margin-top: 20px;">
+                ✨ Powered by Google Gemini AI • 📅 Smart Appointment Booking • 💬 Natural Conversations
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 AI Veterinary Chatbot Platform</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                Testing deployed SDK from Render
+            </p>
+        </div>
+    </div>
+
+    <!-- SDK Configuration -->
+    <script>
+        // Configure SDK to use PRODUCTION backend
+        window.VetChatbotConfig = {
+            apiUrl: 'https://ai-chat-backend-5mfu.onrender.com',
+            userId: 'production-test-' + Date.now(),
+            userName: 'Production Test User',
+            source: 'production-deployment-test'
+        };
+
+        // Log configuration
+        console.log('🔧 SDK Configuration:', window.VetChatbotConfig);
+        console.log('📦 Loading SDK from:', 'https://ai-chat-frontend-pm8e.onrender.com/sdk/vet-chatbot-sdk.umd.cjs');
+    </script>
+
+    <!-- Load SDK from DEPLOYED frontend on Render -->
+    <script src="https://ai-chat-frontend-pm8e.onrender.com/sdk/vet-chatbot-sdk.umd.js"></script>
+
+    <!-- Verification script -->
+    <script>
+        // Wait for SDK to load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (window.VetChatbot) {
+                    console.log('✅ SDK loaded successfully from production!');
+                    console.log('🎯 Available methods:', Object.keys(window.VetChatbot));
+                    console.log('📊 SDK Status: READY');
+                } else {
+                    console.error('❌ SDK failed to load');
+                    console.error('Check if the SDK file exists at the URL');
+                }
+            }, 2000);
+        });
+
+        // Log any errors
+        window.addEventListener('error', (e) => {
+            console.error('❌ Error:', e.message);
+        });
+    </script>
+</body>
+
+</html>

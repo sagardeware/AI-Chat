@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
         lib: {
           entry: path.resolve(__dirname, 'src/sdk.tsx'),
           name: 'VetChatbot',
-          fileName: 'vet-chatbot-sdk',
+          fileName: (format) => `vet-chatbot-sdk.${format}.js`,
           formats: ['umd'], // Universal Module Definition for browser
         },
         rollupOptions: {

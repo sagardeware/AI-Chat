@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production SDK Test - Sunny Paws Veterinary Clinic</title>
+    <style>
+        /* Scope CSS reset to demo page content only, not the widget */
+        .container,
+        .container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 20px 10px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .badge.production {
+            background: #2196F3;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .info-box code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .cta {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🐾 Sunny Paws Veterinary Clinic</h1>
+        <p class="subtitle">Production SDK Test Page</p>
+
+        <div class="hero">
+            <h2>🎉 SDK Deployment Test!</h2>
+            <p>Testing the AI Chatbot SDK with production backend</p>
+            <div>
+                <span class="badge production">✅ Production Backend</span>
+                <span class="badge">🔌 Live SDK</span>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>📡 Backend Status</h3>
+            <p><strong>Backend URL:</strong> <code>https://ai-chat-backend-5mfu.onrender.com</code></p>
+            <p><strong>Status:</strong> <span style="color: #4CAF50; font-weight: bold;">✅ Live and Running</span></p>
+            <p><strong>MongoDB:</strong> <span style="color: #4CAF50; font-weight: bold;">✅ Connected</span></p>
+            <p><strong>Gemini AI:</strong> <span style="color: #4CAF50; font-weight: bold;">✅ Configured</span></p>
+        </div>
+
+        <div class="info-box">
+            <h3>🔌 SDK Configuration</h3>
+            <p><strong>SDK Source:</strong> Local build (<code>./dist-sdk/vet-chatbot-sdk.umd.cjs</code>)</p>
+            <p><strong>API Endpoint:</strong> Production backend on Render</p>
+            <p><strong>Mode:</strong> Production testing</p>
+        </div>
+
+        <div class="cta">
+            <h3>Test the Chatbot!</h3>
+            <p>👉 Click the chat widget in the bottom-right corner!</p>
+            <p>Try asking about pet vaccinations, health concerns, or booking an appointment.</p>
+            <div class="badge">✨ Powered by Google Gemini AI</div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 Sunny Paws Veterinary Clinic. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">This is a production SDK test page</p>
+        </div>
+    </div>
+
+    <!-- Vet Chatbot SDK Integration -->
+    <script>
+        // Configuration pointing to PRODUCTION backend
+        window.VetChatbotConfig = {
+            apiUrl: 'https://ai-chat-backend-5mfu.onrender.com',
+            userId: 'production-test-user',
+            userName: 'Test User',
+            source: 'production-test-page'
+        };
+
+        // Log configuration for debugging
+        console.log('🔧 SDK Configuration:', window.VetChatbotConfig);
+    </script>
+
+    <!-- Load the SDK from local build -->
+    <script src="./dist-sdk/vet-chatbot-sdk.umd.cjs"></script>
+
+    <!-- Test script -->
+    <script>
+        // Wait for SDK to initialize
+        setTimeout(() => {
+            console.log('✅ SDK loaded successfully!');
+            console.log('🎯 VetChatbot API:', window.VetChatbot);
+
+            // Test programmatic API
+            console.log('📝 Available methods:', Object.keys(window.VetChatbot));
+        }, 1000);
+    </script>
+</body>
+
+</html>

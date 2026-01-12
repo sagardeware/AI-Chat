@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vet Chatbot SDK Demo - Sunny Paws Veterinary Clinic</title>
+    <style>
+        /* Scope CSS reset to demo page content only, not the widget */
+        .container,
+        .container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-card li {
+            padding: 8px 0;
+            color: #555;
+        }
+
+        .feature-card li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .cta {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .cta h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🐾 Sunny Paws Veterinary Clinic</h1>
+        <p class="subtitle">Compassionate Care for Your Beloved Pets Since 2010</p>
+
+        <div class="hero">
+            <h2>Welcome to Our Clinic!</h2>
+            <p>We provide comprehensive veterinary services with a team of experienced professionals dedicated to your
+                pet's health and happiness.</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>🏥 Our Services</h3>
+                <ul>
+                    <li>Wellness Examinations</li>
+                    <li>Vaccinations & Preventive Care</li>
+                    <li>Dental Care</li>
+                    <li>Surgery</li>
+                    <li>Emergency Services</li>
+                    <li>Grooming</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>⏰ Clinic Hours</h3>
+                <ul>
+                    <li>Monday - Saturday: 10 AM - 6 PM</li>
+                    <li>Sunday: Closed</li>
+                    <li>Appointments: 1 hour duration</li>
+                    <li>Dr. Peteshwar Dogari</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>📍 Location</h3>
+                <ul>
+                    <li>123 Pet Street</li>
+                    <li>Animal City, AC 12345</li>
+                    <li>Phone: (555) 123-4567</li>
+                    <li>Email: care@sunnypaws.vet</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="cta">
+            <h3>Need Help or Want to Book an Appointment?</h3>
+            <p>👉 Click the chat widget in the bottom-right corner!</p>
+            <p>Our AI assistant is here 24/7 to answer questions and help you schedule appointments.</p>
+            <div class="badge">✨ Powered by AI • Instant Responses • Easy Booking</div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 Sunny Paws Veterinary Clinic. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">This is a demo page showcasing the Vet Chatbot SDK
+                integration.</p>
+        </div>
+    </div>
+
+    <!-- Vet Chatbot SDK Integration -->
+    <script>
+        // Configuration (optional)
+        window.VetChatbotConfig = {
+            apiUrl: 'http://localhost:3001', // Your backend URL
+            userId: 'demo-user-123',
+            userName: 'Demo User',
+            source: 'sunny-paws-website'
+        };
+    </script>
+
+    <!-- Load the SDK -->
+    <script src="./dist-sdk/vet-chatbot-sdk.umd.cjs"></script>
+
+    <!-- Optional: Programmatic control -->
+    <script>
+        // You can control the widget programmatically
+        console.log('Vet Chatbot SDK loaded!');
+
+        // Example: Open widget after 3 seconds (commented out)
+        // setTimeout(() => {
+        //     window.VetChatbot.open();
+        // }, 3000);
+    </script>
+</body>
+
+</html>

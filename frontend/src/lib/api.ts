@@ -1,7 +1,17 @@
 import axios from 'axios';
 import type { ChatRequest, ChatResponse, ConversationHistory, SuggestionsResponse, ConversationListItem, ConversationsListResponse } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+// Get API URL from SDK config or environment
+const getApiUrl = () => {
+    // Check if running as SDK (config in sessionStorage)
+    const sdkApiUrl = typeof window !== 'undefined'
+        ? sessionStorage.getItem('vetChatbot_apiUrl')
+        : null;
+
+    return sdkApiUrl || import.meta.env.VITE_API_URL || 'http://localhost:3001';
+};
+
+const API_URL = getApiUrl();
 
 const api = axios.create({
     baseURL: `${API_URL}/api`,

@@ -17,8 +17,11 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
+// For SDK: Allow all origins so the widget can be embedded on any website
+// In production, you might want to restrict this to specific domains
 const allowedOrigins = [
-    'http://localhost:5173',
+    'http://localhost:5173',  // Vite dev server
+    'http://localhost:3000',  // SDK demo (serve)
     'https://ai-chat-frontend-pm8e.onrender.com',
     process.env.FRONTEND_URL
 ].filter(Boolean);
@@ -28,10 +31,21 @@ app.use(cors({
         // Allow requests with no origin (like mobile apps or curl)
         if (!origin) return callback(null, true);
 
+        // In development, allow all origins for SDK testing
+        if (process.env.NODE_ENV === 'development') {
+            return callback(null, true);
+        }
+
+        // In production, check against whitelist
         if (allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            // For SDK: Allow all origins in production too
+            // Comment this out if you want to restrict to specific domains
+            callback(null, true);
+
+            // Uncomment below to restrict to whitelist only:
+            // callback(new Error('Not allowed by CORS'));
         }
     },
     credentials: true,

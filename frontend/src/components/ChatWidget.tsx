@@ -37,8 +37,8 @@ export function ChatWidget() {
 
             {/* Expanded State - Chat Interface */}
             {isExpanded && (
-                <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-8 duration-300">
-                    <div className="relative bg-background rounded-2xl shadow-2xl overflow-hidden border border-border">
+                <div className="fixed bottom-6 right-6 max-md:bottom-4 max-md:right-4 max-md:left-4 z-50 animate-in fade-in slide-in-from-bottom-8 duration-300">
+                    <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
                         {/* Widget Header */}
                         <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -66,11 +66,9 @@ export function ChatWidget() {
                             <ChatContainer isWidget={true} />
                         </div>
 
-                        {/* Chat Container - Mobile (Full Screen) */}
-                        <div className="md:hidden fixed inset-0 z-50 bg-background">
-                            <div className="h-full pt-16">
-                                <ChatContainer isWidget={true} />
-                            </div>
+                        {/* Chat Container - Mobile (Centered with rounded corners) */}
+                        <div className="md:hidden w-full h-[500px] max-h-[80vh] pt-16">
+                            <ChatContainer isWidget={true} />
                         </div>
                     </div>
                 </div>

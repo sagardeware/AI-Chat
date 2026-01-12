@@ -53,14 +53,27 @@ This is a **production-ready AI chatbot platform** specifically designed for vet
 - **AI Extraction** - Automatically extracts pet name, owner name, date/time from conversation
 - **Slot Validation** - Checks availability before booking
 - **Confirmation System** - User confirms details before final booking
+- **Appointment Display** - View all booked appointments on the main page with shadcn/ui components
+- **Real-time Updates** - Refresh appointments with a single click
+- **Status Tracking** - Visual badges for pending, confirmed, and cancelled appointments
 - **Appointment History** - View past and upcoming appointments
 - **Flexible Scheduling** - Supports custom clinic hours and slot durations
+
+### 🎨 Modern UI with Shadcn/UI
+- **Premium Components** - Professional Card, Badge, and Button components
+- **Responsive Grid** - Adaptive layout (1-3 columns based on screen size)
+- **Icon Integration** - Lucide icons for enhanced visual clarity
+- **Loading States** - Animated spinners and skeleton screens
+- **Error Handling** - User-friendly error messages with retry options
+- **Empty States** - Helpful messaging when no data is available
+- **Custom Animations** - Smooth fade-in and slide-in transitions
 
 ### 🔌 Embeddable SDK
 - **One-Line Integration** - Add chatbot to any website with a single script tag
 - **Customizable Configuration** - Set API URL, user info, and branding
 - **CSS Isolation** - No style conflicts with host website
 - **Mobile Responsive** - Adapts to screen size (floating widget or centered modal)
+- **Improved Mobile Height** - Enhanced chatbox height (650px) for better mobile experience
 - **Programmatic API** - Control widget via JavaScript (`open()`, `close()`, etc.)
 
 ### 💬 User Experience
@@ -124,11 +137,13 @@ This is a **production-ready AI chatbot platform** specifically designed for vet
 - **React 19** - UI library
 - **TypeScript** - Type safety
 - **Vite** - Build tool and dev server
-- **Tailwind CSS** - Utility-first styling
+- **Tailwind CSS v4** - Utility-first styling
+- **Shadcn/UI** - Premium accessible component library
+- **Radix UI** - Headless UI primitives
 - **Axios** - HTTP client
 - **React Markdown** - Markdown rendering
 - **Lucide React** - Icon library
-- **Radix UI** - Accessible components
+- **Class Variance Authority** - Component variants
 
 ### **Backend**
 - **Node.js** - Runtime environment
@@ -237,16 +252,27 @@ AI-Chat/
 │   │   ├── components/
 │   │   │   ├── ChatWidget.tsx       # Floating widget
 │   │   │   ├── ChatContainer.tsx    # Main chat UI
-│   │   │   ├── MessageList.tsx      # Message display
-│   │   │   ├── MessageInput.tsx     # Input field
-│   │   │   └── ui/                  # Reusable UI components
+│   │   │   ├── ChatMessage.tsx      # Message display
+│   │   │   ├── ChatInput.tsx        # Input field
+│   │   │   ├── AppointmentsList.tsx # Appointments display
+│   │   │   └── ui/                  # Shadcn UI components
+│   │   │       ├── card.tsx         # Card component
+│   │   │       ├── badge.tsx        # Badge component
+│   │   │       ├── button.tsx       # Button component
+│   │   │       └── separator.tsx    # Separator component
+│   │   ├── hooks/
+│   │   │   └── useAppointments.ts   # Appointments custom hook
 │   │   ├── lib/
-│   │   │   └── api.ts               # API client
+│   │   │   ├── api.ts               # API client
+│   │   │   └── utils.ts             # Utility functions
+│   │   ├── types/
+│   │   │   └── index.ts             # TypeScript types
 │   │   ├── App.tsx                  # Main app
 │   │   ├── sdk.tsx                  # SDK entry point
-│   │   └── index.css                # Global styles
+│   │   └── index.css                # Global styles + animations
 │   ├── dist-sdk/                    # SDK build output
 │   ├── demo.html                    # SDK demo page
+│   ├── components.json              # Shadcn UI config
 │   ├── package.json
 │   ├── vite.config.ts               # Vite configuration
 │   └── tsconfig.json
@@ -254,6 +280,8 @@ AI-Chat/
 ├── DEPLOYMENT.md                    # Deployment guide
 ├── QUICK_DEPLOY.md                  # Quick reference
 ├── SDK_README.md                    # SDK documentation
+├── APPOINTMENTS_FEATURE.md          # Appointments feature docs
+├── SHADCN_REDESIGN.md               # UI redesign documentation
 └── README.md                        # This file
 ```
 
@@ -291,6 +319,28 @@ Get conversation history for a user.
 Get suggested questions.
 
 ### **Appointment Endpoints**
+
+#### `GET /api/chat/appointments`
+Get all appointments (for display on main page).
+
+**Response:**
+```json
+{
+  "success": true,
+  "appointments": [
+    {
+      "id": "apt-123",
+      "conversationId": "conv-abc",
+      "petOwnerName": "John Doe",
+      "petName": "Buddy",
+      "phone": "555-1234",
+      "preferredDateTime": "2026-01-15T14:00:00Z",
+      "status": "pending",
+      "createdAt": "2026-01-12T10:30:00Z"
+    }
+  ]
+}
+```
 
 #### `GET /api/appointments/slots/available`
 Get available appointment slots.

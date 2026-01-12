@@ -67,7 +67,7 @@ export function ChatWidget() {
                         </div>
 
                         {/* Chat Container - Mobile (Centered with rounded corners) */}
-                        <div className="md:hidden w-full h-[500px] max-h-[80vh] pt-16">
+                        <div className="md:hidden w-full h-[650px] max-h-[90vh] pt-16">
                             <ChatContainer isWidget={true} />
                         </div>
                     </div>

@@ -36,3 +36,19 @@ export interface ConversationListItem {
 export interface ConversationsListResponse {
     conversations: ConversationListItem[];
 }
+
+export interface Appointment {
+    id: string;
+    conversationId: string;
+    petOwnerName: string;
+    petName: string;
+    phone: string;
+    preferredDateTime: string;
+    status: 'pending' | 'confirmed' | 'cancelled';
+    createdAt: string;
+}
+
+export interface AppointmentsResponse {
+    success: boolean;
+    appointments: Appointment[];
+}

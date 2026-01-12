@@ -206,29 +206,43 @@
         </div>
     </div>
 
-    <!-- Vet Chatbot SDK Integration -->
     <script>
-        // Configuration (optional)
+        // Configure SDK to use PRODUCTION backend
         window.VetChatbotConfig = {
-            apiUrl: 'http://localhost:3001', // Your backend URL
-            userId: 'demo-user-123',
-            userName: 'Demo User',
-            source: 'sunny-paws-website'
+            apiUrl: 'https://ai-chat-backend-5mfu.onrender.com',
+            userId: 'production-test-' + Date.now(),
+            userName: 'Production Test User',
+            source: 'production-deployment-test'
         };
+
+        // Log configuration
+        console.log('🔧 SDK Configuration:', window.VetChatbotConfig);
+        console.log('📦 Loading SDK from:', 'https://ai-chat-frontend-pm8e.onrender.com/sdk/vet-chatbot-sdk.umd.cjs');
     </script>
 
-    <!-- Load the SDK -->
-    <script src="./dist-sdk/vet-chatbot-sdk.umd.js"></script>
+    <!-- Load SDK from DEPLOYED frontend on Render -->
+    <script src="https://ai-chat-frontend-pm8e.onrender.com/sdk/vet-chatbot-sdk.umd.js"></script>
 
-    <!-- Optional: Programmatic control -->
+    <!-- Verification script -->
     <script>
-        // You can control the widget programmatically
-        console.log('Vet Chatbot SDK loaded!');
+        // Wait for SDK to load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (window.VetChatbot) {
+                    console.log('✅ SDK loaded successfully from production!');
+                    console.log('🎯 Available methods:', Object.keys(window.VetChatbot));
+                    console.log('📊 SDK Status: READY');
+                } else {
+                    console.error('❌ SDK failed to load');
+                    console.error('Check if the SDK file exists at the URL');
+                }
+            }, 2000);
+        });
 
-        // Example: Open widget after 3 seconds (commented out)
-        // setTimeout(() => {
-        //     window.VetChatbot.open();
-        // }, 3000);
+        // Log any errors
+        window.addEventListener('error', (e) => {
+            console.error('❌ Error:', e.message);
+        });
     </script>
 </body>
 

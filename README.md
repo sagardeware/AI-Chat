@@ -403,13 +403,50 @@ Add this to any HTML page:
 
 ```javascript
 window.VetChatbotConfig = {
-    apiUrl: 'https://your-backend.onrender.com',  // Required
-    userId: 'unique-user-id',                      // Optional
-    userName: 'User Name',                         // Optional
-    petName: 'Pet Name',                           // Optional
-    source: 'website-identifier'                   // Optional
+    apiUrl: 'https://your-backend.onrender.com',  // Required: Backend API URL
+    userId: 'unique-user-id',                      // Optional: User identifier
+    userName: 'User Name',                         // Optional: User's name
+    petName: 'Pet Name',                           // Optional: Pet's name
+    source: 'website-identifier'                   // Optional: Source tracking
 };
 ```
+
+**Context Storage:**
+- ✅ Config is **optional** - SDK works without it
+- ✅ Context is sent to backend **only on first message** (new conversation)
+- ✅ Stored in database under `conversation.metadata`
+- ✅ Subsequent messages use `sessionId` (no context resent)
+
+**Example Request (First Message):**
+```json
+POST /api/chat/message
+{
+  "message": "Hello, I need help",
+  "context": {
+    "userId": "user_123",
+    "userName": "John Doe",
+    "petName": "Buddy",
+    "source": "marketing-website"
+  }
+}
+```
+
+**Database Storage:**
+```json
+// MongoDB - conversations collection
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "metadata": {
+    "userId": "user_123",
+    "userName": "John Doe",
+    "petName": "Buddy",
+    "source": "marketing-website"
+  },
+  "createdAt": "2026-01-13T10:30:00Z",
+  "updatedAt": "2026-01-13T10:35:00Z"
+}
+```
+
 
 ### **Programmatic Control**
 
@@ -612,6 +649,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Deployment Guide](./DEPLOYMENT.md) - Detailed deployment instructions
 - [Quick Deploy Reference](./QUICK_DEPLOY.md) - TL;DR deployment guide
 - [SDK Documentation](./SDK_README.md) - Complete SDK reference
+- [Context Implementation](./CONTEXT_IMPLEMENTATION.md) - SDK context feature details
 - [Appointment System](./APPOINTMENT_SYSTEM_COMPLETE.md) - Appointment feature details
 - [Slot Management](./SLOT_MANAGEMENT.md) - Slot system documentation
 

@@ -27,10 +27,34 @@ export async function sendMessage(
     message: string,
     sessionId?: string
 ): Promise<ChatResponse> {
-    const response = await api.post<ChatResponse>('/chat/message', {
+    // Prepare request body
+    const requestBody: ChatRequest = {
         message,
         sessionId,
-    } as ChatRequest);
+    };
+
+    // If this is a new conversation (no sessionId), include context from SDK config
+    if (!sessionId) {
+        const context: ChatRequest['context'] = {};
+
+        // Read from sessionStorage (set by SDK)
+        const userId = sessionStorage.getItem('vetChatbot_userId');
+        const userName = sessionStorage.getItem('vetChatbot_userName');
+        const petName = sessionStorage.getItem('vetChatbot_petName');
+        const source = sessionStorage.getItem('vetChatbot_source');
+
+        // Only include context if at least one value exists
+        if (userId || userName || petName || source) {
+            if (userId) context.userId = userId;
+            if (userName) context.userName = userName;
+            if (petName) context.petName = petName;
+            if (source) context.source = source;
+
+            requestBody.context = context;
+        }
+    }
+
+    const response = await api.post<ChatResponse>('/chat/message', requestBody);
     return response.data;
 }
 
